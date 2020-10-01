@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <pthread.h> 
+#include <stdlib.h>
+
+typedef struct merg{
+    int* vetor;
+    int inicio;
+    int fim;
+}merg;
+
+int i=0;
+
+int main() {
+    pthread_t *threads;
+
+    for(i=0; i<C; i++) {
+        pthread_mutex_init(&mutexes[i], NULL);
+    }
+
+    for(i=0; i<50; i++) {
+        pthread_create(&threads[i],NULL,leVoto, i);
+    }
+
+    for(i=0; i<t; i++) {
+        pthread_join(&threads[i], NULL);
+    }
+
+    pthread_exit(NULL);
+
+    for(i=0; i<C; i++) {
+        total += votos[i];
+        if(votos[i] > maior) vencedor=i;
+    }
+
+    for(i=0; i<C; i++) {
+        perc = (double)votos[i]/total;
+        printf("Candidato %d = %.2lf\n", i+1, perc);
+    }
+
+    printf("Vencedor: candidato %d!\n", vencedor+1);
+
+
+    return 0;
+}
+
+void merge(int* vetor,int inicio, int meio, int fim){
+    int i,j,k;
+    int aux1 = meio - inicio + 1;
+    int aux2 =  fim - meio;
+    int e[aux1];
+    int d[aux2];
+ 
+    //preencher os vetores auxiliares
+    for(i=0;i<aux1;i++){
+        e[i]=vetor[inicio+i];
+    }
+    for(i=0;i<aux2;i++){
+        d[i]=vetor[meio+i+1];
+    }
+    //fazer a troca
+    i=0;
+    j=0;
+    k=inicio;
+    while(i<aux1 && j<aux2){
+        if(e[i]<=d[j]){
+            vetor[k]=e[i];
+            i++;
+        }
+        else{
+            vetor[k]=d[j];
+            j++;
+        }
+        k++;
+    }
+    while(i<aux1){
+        vetor[k]=e[i];
+        i++;
+        k++;
+    }
+    while(j<aux2){
+        vetor[k]=d[j];
+        j++;
+        k++;
+    }
+};
+void mergesort(merg x){
+    if(x->inicio < x->fim){
+        int meio= (x->inicio + x->fim)/2;
+        
+        merg a;
+        a->vetor=vetor;
+        a->inicio=inicio;
+        a->fim=meio;
+        pthread_create(&threads[i],NULL,mergesort, a);
+        i++;
+        
+        merg b;
+        b->vetor=vetor;
+        b->inicio=meio+1;
+        b->fim=fim;
+        pthread_create(&threads[i],NULL,mergesort, b);
+        i++;
+
+        merge(vetor,inicio,meio,fim);        
+    }
+    pthread_exit(NULL);
+};
